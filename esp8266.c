@@ -94,7 +94,8 @@ char *espData(void)
     CRC[0] = dataParsed[lenght-2];
     CRC[1] = dataParsed[lenght-1];
 
-    payloadCRC = (uint16_t)CRC[0] << 8 | (uint16_t)CRC[1];
+    payloadCRC = (uint16_t)CRC[0] << 8 ;
+    payloadCRC |= (uint16_t)CRC[1];
 
     return payload;
 }
@@ -106,6 +107,7 @@ int dataParsing(void){
         if(strstr(receivedData[i],"+IPD,") != 0){
             __delay_cycles(20000);
             parse = strstr(receivedData[i],":");
+
             while(*parse++){
                 dataParsed[index++] = *parse;
                 __delay_cycles(10000);

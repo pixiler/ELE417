@@ -14,7 +14,7 @@
 
 #define led0 BIT0
 #define led1 BIT1
-
+     volatile unsigned int validArr[12] ={ 0};
 unsigned char data;
 volatile int lenght = 0;
 extern int CRC[2];
@@ -69,6 +69,7 @@ int main(void)
 
      espWrite("hi","SEND OK",1);
 
+
 while(1){
      for(count_req; count_req<12; count_req++){
          fillDisplay (0x00);//you can use this function to clear screen
@@ -79,9 +80,17 @@ while(1){
          payload = (char *)espRead();
          valid = validData(payload);
 
-         oled(payload,6,0);
-         strcat(bluetoothPayload,payload);
-         strcat(bluetoothPayload,"|");
+         if(validData(payload)){
+             oled(payload,6,0);
+             strcat(bluetoothPayload,payload);
+             strcat(bluetoothPayload,"|");
+         }
+
+         else{
+             oled(MessageErr,6,0);
+            strcat(bluetoothPayload,MessageErr);
+            strcat(bluetoothPayload,"|");
+         }
 
          switch (count_req) {
             case 1:
@@ -137,7 +146,7 @@ while(1){
 
          }
 }
-
+*/
 	return 0;
 }
 #pragma vector = USCI_A0_VECTOR
@@ -182,7 +191,7 @@ void GPIO_init(void)
 }
 int validData(char *payload)
 {
-    cal_crc = calculateCRC((uint8_t *)payload,(sizeof(payload)/sizeof(payload[0])));
+    cal_crc = calculateCRC((uint8_t *)payload,strlen(payload));
     if(payloadCRC == cal_crc){
         return 1;
     }
