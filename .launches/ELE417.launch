@@ -4,7 +4,7 @@
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROGRAM.MSP430FR2433.ccxml.TI MSP430 USB1/MSP430" value="${build_artifact:ELE417}"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.MSP430FR2433.ccxml.TI MSP430 USB1/MSP430" value="ELE417"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_TARGET_CONFIG" value="${target_config_active_default:ELE417}"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.MSP430FR2433.ccxml.TI MSP430 USB1/MSP430" value="D:/Workspace\CCS_Workspace\ELE417\Debug\ELE417.out"/>
+<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.MSP430FR2433.ccxml.TI MSP430 USB1/MSP430" value="D:/Workspace\ELE417\ELE417\Debug\ELE417.out"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/ELE417"/>
 </listAttribute>

@@ -13,7 +13,6 @@
 char receivedData[20][100] = {};
 unsigned int raw = 0;
 unsigned int col = 0;
-unsigned char checking[100] = {};
 char dataParsed[20];
 char payload[20];
 unsigned int CRC[2];
@@ -61,8 +60,7 @@ void espSendArray(char *TxArray)
 void espGetArray(char espData)
 {
     receivedData[col][raw++] = espData;
-    if(espData == '\r' || found == 1){
-        if(espData == 'n');
+    if(espData == '\r'){
         raw = 0;
         col++;
     }
@@ -73,7 +71,6 @@ int wait(char *response)     //wait esp return "OK"
     unsigned int i;
     for(i = 0; i<20; i++){
         if(strstr(receivedData[i],response) != 0){
-            //WDTCTL |= WDTCNTCL;
             return 1;
         }
     }
@@ -82,8 +79,6 @@ int wait(char *response)     //wait esp return "OK"
 char *espRead(void)
 {
     while(dataParsing() == 0);
-
-    //WDTCTL |= WDTCNTCL;
 
     return espData();
 }

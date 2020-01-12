@@ -1,10 +1,12 @@
 #include <msp430.h> 
 #include <esp8266.h>
+#include <hc06.h>
 #include <crc16modbus.h>
 #include <ssd1306_lib.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <icon.h>
 
 /**
  * main.c
@@ -31,9 +33,13 @@ void GPIO_init(void);
 int validData(char *payload);
 void espServer(void);
 void oled(char str[],int x,int y);
+void sendMail(void);
+
+
 int flag = 0;
 int countTimer = 0;
 char MessageErr[10] = "DATA ERROR";
+
 
 int main(void)
 {
@@ -50,19 +56,8 @@ int main(void)
 	espSerialInit();
 	GPIO_init();
 
-
-
-	//char printNum[80];
-
-	       //char num[21]=" ";
-	   //    sprintf (printNum, "%s", ipek);
-	   //    draw6x8Str(0,  0, printNum, 1, 0);
-
-
      __bis_SR_register(GIE);  // intruppt enable
-     espWrite("AT+RST\r\n", "invalid",1);
-
-     P1OUT |= BIT0;       // RED = 0, GREEN = 1
+     //espWrite("AT+RST\r\n", "invalid",1);
 
      espWrite("ATE0\r\n", "OK",1);
 
@@ -74,19 +69,6 @@ int main(void)
 
      espWrite("hi","SEND OK",1);
 
-     espWrite("AT+CIPSEND=2\r\n", ">", 0);
-              espWrite(request(1), "SEND OK", 0);
-
-//     payload = espRead();
-//     oled(payload,6,0);
-//              valid = validData(payload);
-//          //clear();
-//
-//
-//     payload = espRead();
-//
-//     validData(payload);
-
 while(1){
      for(count_req; count_req<12; count_req++){
          fillDisplay (0x00);//you can use this function to clear screen
@@ -96,17 +78,50 @@ while(1){
 
          payload = (char *)espRead();
          valid = validData(payload);
-         if(valid == 1){
-             oled(payload,6,0);
-             strcat(bluetoothPayload,payload);
-             strcat(bluetoothPayload,"|");
 
-         }
-         else{
-             oled(MessageErr,6,0);
-             strcat(bluetoothPayload,MessageErr);
-             strcat(bluetoothPayload,"|");
-         }
+         oled(payload,6,0);
+         strcat(bluetoothPayload,payload);
+         strcat(bluetoothPayload,"|");
+
+         switch (count_req) {
+            case 1:
+                drawImage(88, 24, 40, 40, temperature, 0);
+                break;
+            case 2:
+                drawImage(88, 24, 40, 40, meter, 0);
+                break;
+            case 3:
+                drawImage(88, 24, 40, 40, humidity, 0);
+                break;
+            case 4:
+                drawImage(88, 24, 40, 40, windy, 0);
+                break;
+            case 5:
+                drawImage(88, 24, 40, 40, climate, 0);
+                break;
+            case 6:
+                drawImage(88, 24, 40, 40, snowy, 0);
+                break;
+            case 7:
+                drawImage(88, 24, 40, 40, time_date, 0);
+                break;
+            case 8:
+                drawImage(88, 24, 40, 40, scheduling, 0);
+                break;
+            case 9:
+                drawImage(88, 24, 40, 40, uptime, 0);
+                break;
+            case 10:
+                drawImage(88, 24, 40, 40, fan, 0);
+                break;
+            case 11:
+                drawImage(88, 24, 40, 40, segmentation, 0);
+                break;
+
+            default:
+                break;
+        }
+
 
      clear();
      __delay_cycles(500000);
@@ -133,7 +148,6 @@ __interrupt void USCI0RX_ISR(void)
     case USCI_NONE: break;
     case USCI_UART_UCRXIFG:
         data = UCA0RXBUF;                     // read the received char - also clears Interrupt
-        //_BIC_SR_IRQ(LPM0_bits);
         espGetArray(data);                           // Process the received char
         break;
     case USCI_UART_UCTXIFG: break;
@@ -180,6 +194,7 @@ void oled(char* str,int x,int y){//first input is string, second chose between 6
     if (strlen(str) <=20){
        //sprintf (printString, "%s", str);
         draw6x8Str(0,  y, str, 1, 0);
+        //drawImage(10, 10, 40, 40, climate, 0);
     }
     else if(strlen(str) >20){
         for (j=0;j<(strlen(str)-20);j++) {
